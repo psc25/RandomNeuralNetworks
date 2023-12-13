@@ -1,0 +1,17 @@
+\multirow{2}{*}{$N = 10$} & \textit{985.93} & \cellcolor{Gray} \textit{0.08} & \textit{994.53} & \cellcolor{Gray} \textit{0.11} & \textit{1056.62} & \cellcolor{Gray} \textit{0.12} \\ 
+  &  $6.96 \cdot 10^{10}$ & \cellcolor{Gray} $1.65 \cdot 10^{7}$ &  $1.32 \cdot 10^{11}$ & \cellcolor{Gray} $2.13 \cdot 10^{7}$ &  $1.94 \cdot 10^{11}$ & \cellcolor{Gray} $2.61 \cdot 10^{7}$ \\ 
+\hline 
+\multirow{2}{*}{$N = 50$} & \textit{1028.83} & \cellcolor{Gray} \textit{0.47} & \textit{1078.05} & \cellcolor{Gray} \textit{0.54} & \textit{1045.09} & \cellcolor{Gray} \textit{0.58} \\ 
+  &  $2.81 \cdot 10^{11}$ & \cellcolor{Gray} $2.21 \cdot 10^{8}$ &  $5.35 \cdot 10^{11}$ & \cellcolor{Gray} $2.26 \cdot 10^{8}$ &  $7.90 \cdot 10^{11}$ & \cellcolor{Gray} $2.31 \cdot 10^{8}$ \\ 
+\hline 
+\multirow{2}{*}{$N = 100$} & \textit{1105.79} & \cellcolor{Gray} \textit{1.07} & \textit{1110.50} & \cellcolor{Gray} \textit{1.13} & \textit{1179.85} & \cellcolor{Gray} \textit{1.12} \\ 
+  &  $5.45 \cdot 10^{11}$ & \cellcolor{Gray} $8.37 \cdot 10^{8}$ &  $1.04 \cdot 10^{12}$ & \cellcolor{Gray} $8.42 \cdot 10^{8}$ &  $1.53 \cdot 10^{12}$ & \cellcolor{Gray} $8.47 \cdot 10^{8}$ \\ 
+\hline 
+\multirow{2}{*}{$N = 200$} & \textit{1164.95} & \cellcolor{Gray} \textit{2.63} & \textit{1194.23} & \cellcolor{Gray} \textit{2.79} & \textit{1268.09} & \cellcolor{Gray} \textit{2.87} \\ 
+  &  $1.07 \cdot 10^{12}$ & \cellcolor{Gray} $3.27 \cdot 10^{9}$ &  $2.05 \cdot 10^{12}$ & \cellcolor{Gray} $3.28 \cdot 10^{9}$ &  $3.02 \cdot 10^{12}$ & \cellcolor{Gray} $3.28 \cdot 10^{9}$ \\ 
+\hline 
+\multirow{2}{*}{$N = 300$} &  & \cellcolor{Gray} \textit{4.93} &  & \cellcolor{Gray} \textit{4.91} &  & \cellcolor{Gray} \textit{5.03} \\ 
+  &  & \cellcolor{Gray} $7.31 \cdot 10^{9}$ &  & \cellcolor{Gray} $7.31 \cdot 10^{9}$ &  & \cellcolor{Gray} $7.32 \cdot 10^{9}$ \\ 
+\hline 
+\multirow{2}{*}{$N = 400$} &  & \cellcolor{Gray} \textit{7.58} &  & \cellcolor{Gray} \textit{7.57} &  & \cellcolor{Gray} \textit{7.59} \\ 
+  &  & \cellcolor{Gray} $1.29 \cdot 10^{10}$ &  & \cellcolor{Gray} $1.29 \cdot 10^{10}$ &  & \cellcolor{Gray} $1.30 \cdot 10^{10}$
