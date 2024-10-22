@@ -1,17 +1,26 @@
-\multirow{2}{*}{$N = 10$} & \textit{985.93} & \cellcolor{Gray} \textit{0.08} & \textit{994.53} & \cellcolor{Gray} \textit{0.11} & \textit{1056.62} & \cellcolor{Gray} \textit{0.12} \\ 
-  &  $6.96 \cdot 10^{10}$ & \cellcolor{Gray} $1.65 \cdot 10^{7}$ &  $1.32 \cdot 10^{11}$ & \cellcolor{Gray} $2.13 \cdot 10^{7}$ &  $1.94 \cdot 10^{11}$ & \cellcolor{Gray} $2.61 \cdot 10^{7}$ \\ 
+\multirow{8}{*}{$m = 10$} & \multirow{2}{*}{$\mathcal{T}_{\mathbb{R}^m,1}$} & \textit{359.38} & \textit{434.38} & \textit{546.61} & \textit{734.56} & & \\ 
+& & $1.0\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & $1.9\cdot 10^{11}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RT}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.13} & \cellcolor{Gray} \textit{0.40} & \cellcolor{Gray} \textit{0.91} & \cellcolor{Gray} \textit{2.60} & \cellcolor{Gray} \textit{9.36} & \cellcolor{Gray} \textit{30.41} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $8.5\cdot 10^{6}$ & \cellcolor{Gray} $5.0\cdot 10^{7}$ & \cellcolor{Gray} $2.0\cdot 10^{8}$ & \cellcolor{Gray} $8.0\cdot 10^{8}$ & \cellcolor{Gray} $3.2\cdot 10^{9}$ & \cellcolor{Gray} $1.3\cdot 10^{10}$ \\ 
+& \multirow{2}{*}{$\mathcal{N}^{\tanh}_{\mathbb{R}^m,1}$} & \textit{348.43} & \textit{382.21} & \textit{425.88} & \textit{506.86} & & \\ 
+& & $1.0\cdot 10^{10}$ & $2.4\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RN}^{\tanh}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.07} & \cellcolor{Gray} \textit{0.21} & \cellcolor{Gray} \textit{0.47} & \cellcolor{Gray} \textit{1.04} & \cellcolor{Gray} \textit{2.59} & \cellcolor{Gray} \textit{7.99} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $8.6\cdot 10^{6}$ & \cellcolor{Gray} $5.1\cdot 10^{7}$ & \cellcolor{Gray} $2.0\cdot 10^{8}$ & \cellcolor{Gray} $8.0\cdot 10^{8}$ & \cellcolor{Gray} $3.2\cdot 10^{9}$ & \cellcolor{Gray} $1.3\cdot 10^{10}$ \\ 
 \hline 
-\multirow{2}{*}{$N = 50$} & \textit{1028.83} & \cellcolor{Gray} \textit{0.47} & \textit{1078.05} & \cellcolor{Gray} \textit{0.54} & \textit{1045.09} & \cellcolor{Gray} \textit{0.58} \\ 
-  &  $2.81 \cdot 10^{11}$ & \cellcolor{Gray} $2.21 \cdot 10^{8}$ &  $5.35 \cdot 10^{11}$ & \cellcolor{Gray} $2.26 \cdot 10^{8}$ &  $7.90 \cdot 10^{11}$ & \cellcolor{Gray} $2.31 \cdot 10^{8}$ \\ 
+\multirow{8}{*}{$m = 20$} & \multirow{2}{*}{$\mathcal{T}_{\mathbb{R}^m,1}$} & \textit{371.36} & \textit{495.81} & \textit{598.58} & \textit{769.88} & & \\ 
+& & $1.0\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & $1.9\cdot 10^{11}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RT}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.18} & \cellcolor{Gray} \textit{0.48} & \cellcolor{Gray} \textit{1.04} & \cellcolor{Gray} \textit{2.46} & \cellcolor{Gray} \textit{7.51} & \cellcolor{Gray} \textit{31.62} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $8.5\cdot 10^{6}$ & \cellcolor{Gray} $5.0\cdot 10^{7}$ & \cellcolor{Gray} $2.0\cdot 10^{8}$ & \cellcolor{Gray} $8.0\cdot 10^{8}$ & \cellcolor{Gray} $3.2\cdot 10^{9}$ & \cellcolor{Gray} $1.3\cdot 10^{10}$ \\ 
+& \multirow{2}{*}{$\mathcal{N}^{\tanh}_{\mathbb{R}^m,1}$} & \textit{344.64} & \textit{432.72} & \textit{459.36} & \textit{563.23} & & \\ 
+& & $1.0\cdot 10^{10}$ & $2.4\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RN}^{\tanh}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.09} & \cellcolor{Gray} \textit{0.24} & \cellcolor{Gray} \textit{0.46} & \cellcolor{Gray} \textit{1.00} & \cellcolor{Gray} \textit{2.58} & \cellcolor{Gray} \textit{9.32} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $6.0\cdot 10^{8}$ & \cellcolor{Gray} $3.5\cdot 10^{9}$ & \cellcolor{Gray} $1.4\cdot 10^{10}$ & \cellcolor{Gray} $3.8\cdot 10^{10}$ & \cellcolor{Gray} $1.4\cdot 10^{11}$ & \cellcolor{Gray} $1.3\cdot 10^{10}$ \\ 
 \hline 
-\multirow{2}{*}{$N = 100$} & \textit{1105.79} & \cellcolor{Gray} \textit{1.07} & \textit{1110.50} & \cellcolor{Gray} \textit{1.13} & \textit{1179.85} & \cellcolor{Gray} \textit{1.12} \\ 
-  &  $5.45 \cdot 10^{11}$ & \cellcolor{Gray} $8.37 \cdot 10^{8}$ &  $1.04 \cdot 10^{12}$ & \cellcolor{Gray} $8.42 \cdot 10^{8}$ &  $1.53 \cdot 10^{12}$ & \cellcolor{Gray} $8.47 \cdot 10^{8}$ \\ 
-\hline 
-\multirow{2}{*}{$N = 200$} & \textit{1164.95} & \cellcolor{Gray} \textit{2.63} & \textit{1194.23} & \cellcolor{Gray} \textit{2.79} & \textit{1268.09} & \cellcolor{Gray} \textit{2.87} \\ 
-  &  $1.07 \cdot 10^{12}$ & \cellcolor{Gray} $3.27 \cdot 10^{9}$ &  $2.05 \cdot 10^{12}$ & \cellcolor{Gray} $3.28 \cdot 10^{9}$ &  $3.02 \cdot 10^{12}$ & \cellcolor{Gray} $3.28 \cdot 10^{9}$ \\ 
-\hline 
-\multirow{2}{*}{$N = 300$} &  & \cellcolor{Gray} \textit{4.93} &  & \cellcolor{Gray} \textit{4.91} &  & \cellcolor{Gray} \textit{5.03} \\ 
-  &  & \cellcolor{Gray} $7.31 \cdot 10^{9}$ &  & \cellcolor{Gray} $7.31 \cdot 10^{9}$ &  & \cellcolor{Gray} $7.32 \cdot 10^{9}$ \\ 
-\hline 
-\multirow{2}{*}{$N = 400$} &  & \cellcolor{Gray} \textit{7.58} &  & \cellcolor{Gray} \textit{7.57} &  & \cellcolor{Gray} \textit{7.59} \\ 
-  &  & \cellcolor{Gray} $1.29 \cdot 10^{10}$ &  & \cellcolor{Gray} $1.29 \cdot 10^{10}$ &  & \cellcolor{Gray} $1.30 \cdot 10^{10}$
+\multirow{8}{*}{$m = 30$} & \multirow{2}{*}{$\mathcal{T}_{\mathbb{R}^m,1}$} & \textit{439.63} & \textit{529.50} & \textit{693.85} & \textit{819.93} & & \\ 
+& & $1.0\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & $1.9\cdot 10^{11}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RT}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.20} & \cellcolor{Gray} \textit{0.48} & \cellcolor{Gray} \textit{0.97} & \cellcolor{Gray} \textit{2.41} & \cellcolor{Gray} \textit{9.09} & \cellcolor{Gray} \textit{24.37} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $8.5\cdot 10^{6}$ & \cellcolor{Gray} $5.0\cdot 10^{7}$ & \cellcolor{Gray} $2.0\cdot 10^{8}$ & \cellcolor{Gray} $8.0\cdot 10^{8}$ & \cellcolor{Gray} $3.2\cdot 10^{9}$ & \cellcolor{Gray} $1.3\cdot 10^{10}$ \\ 
+& \multirow{2}{*}{$\mathcal{N}^{\tanh}_{\mathbb{R}^m,1}$} & \textit{410.55} & \textit{463.20} & \textit{494.44} & \textit{596.33} & & \\ 
+& & $1.0\cdot 10^{10}$ & $2.4\cdot 10^{10}$ & $4.8\cdot 10^{10}$ & $9.6\cdot 10^{10}$ & & \\ 
+& \cellcolor{Gray} \multirow{2}{*}{$\mathcal{RN}^{\tanh}_{\mathbb{R}^m,1}$} & \cellcolor{Gray} \textit{0.09} & \cellcolor{Gray} \textit{0.23} & \cellcolor{Gray} \textit{0.50} & \cellcolor{Gray} \textit{0.99} & \cellcolor{Gray} \textit{2.47} & \cellcolor{Gray} \textit{7.12} \\ 
+& \cellcolor{Gray} & \cellcolor{Gray} $1.0\cdot 10^{8}$ & \cellcolor{Gray} $6.1\cdot 10^{8}$ & \cellcolor{Gray} $2.4\cdot 10^{9}$ & \cellcolor{Gray} $1.6\cdot 10^{9}$ & \cellcolor{Gray} $6.4\cdot 10^{9}$ & \cellcolor{Gray} $2.6\cdot 10^{10}$ 
