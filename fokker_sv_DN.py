@@ -1,11 +1,12 @@
 import numpy as np
-import scipy.stats as scs
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import time
 
 t = 1.0
-lam = 4.0
-sig = np.sqrt(2.0*lam*t)
+K1 = 100
+tt = np.linspace(0.0, t, K1)
+dt1 = t/K1
 
 J = 200000
 val_split = 0.2
@@ -17,31 +18,41 @@ ep = 3000
 batch_size = 500
 nrbatch = int(Jtrain/batch_size)
 eval_every = 100
-lr = 1e-5
+lr = 5e-5
 activation = tf.tanh
-init = tf.random_normal_initializer()
+init = tf.random_normal_initializer(stddev = 1e-2)
 print_details = True
 
 mm = [10, 20, 30]
-NN = [10, 25, 50, 100]
+NN = [16, 32, 64, 128, 256, 512, 1024]
 
 err = np.nan*np.ones([len(mm), len(NN), 2])
 tms = np.nan*np.ones([len(mm), len(NN)])
-evl = np.zeros([len(mm), len(NN)], dtype = np.int64)
-u1p = np.nan*np.ones([len(mm), len(NN), 500])
+u1p = np.nan*np.ones([len(mm), len(NN), 100])
 for mi in range(len(mm)):
     m = mm[mi]
-    R = 4.0*np.power(m, 0.4)
-    V = np.random.normal(size = [J, m], scale = 1.0)
-    ncp = np.sum(np.square(V/sig), axis = -1, keepdims = True)
-    Y = scs.ncx2.cdf(np.square(R/sig), df = m, nc = ncp)
+    N = NN[0]
+    C1 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(m)
+    C2 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(m)
+    c2 = 0.1*np.ones([1, m], dtype = np.float32)/m
+    D = 0.2*np.eye(m, dtype = np.float32)/np.sqrt(m)
+    mu = np.zeros([K1+1, m], dtype = np.float32)
+    Sigma = np.zeros([K1+1, m, m], dtype = np.float32)
+    Sigma[0] = 0.5*np.eye(m, dtype = np.float32)/np.sqrt(m)
+    for l in range(K1):
+        mu[l+1] = mu[l] + (-np.matmul(C1, mu[l]) - c2)*dt1
+        Sigma[l+1] = Sigma[l] + (-np.matmul(C1+C2, Sigma[l]) - np.matmul(Sigma[l], C1+C2) + 2*D)*dt1
+        
+    mut = mu[K1:]
+    Sigmat = Sigma[K1]
+    Sigmat1 = np.linalg.inv(Sigmat)
+    
+    V = np.random.normal(size = [J, m], scale = 0.3)
+    Y = np.exp(-0.5*np.sum(np.matmul(V-mut, Sigmat1)*(V-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.sqrt(np.linalg.det(Sigmat))
     
     for Ni in range(len(NN)):
         tf.reset_default_graph()
         N = NN[Ni]
-        
-        # Accounting (for above): Generate V (Jtrain units) and compute Y := f(1,V) (Jtrain units)
-        evl[mi, Ni] = evl[mi, Ni] + Jtrain + Jtrain
         
         begin1 = time.time()
         inp = tf.placeholder(shape = (None, m), dtype = tf.float32)
@@ -71,9 +82,6 @@ for mi in range(len(mm)):
                 ind_batch = ind_train[(j*batch_size):((j+1)*batch_size)]
                 feed_dict = {inp: V[ind_batch], out: Y[ind_batch]}
                 _, loss1[j] = sess.run([train_op, loss], feed_dict)
-                
-            # Accounting: Compute "out1" (Jtrain*N units), compute "loss" (Jtrain units), and apply gradients (Jtrain*N)
-            evl[mi, Ni] = evl[mi, Ni] + Jtrain*N + Jtrain + Jtrain*N
             
             end = time.time()
             res_loss[i, 0] = np.sqrt(np.mean(loss1))
@@ -94,14 +102,23 @@ for mi in range(len(mm)):
         tms[mi, Ni] = end1-begin1
         ind = np.nanargmin(res_loss[:, 1])
         err[mi, Ni] = res_loss[-1]
-        u = 0.5*np.ones([500, m])
-        u[:, 0] = np.linspace(-4.0, 4.0, 500)
+        u = 0.25*np.ones([100, m])
+        u[:, 0] = np.linspace(-0.4, 0.4, 100)
         feed_dict = {inp: u}
         u1p[mi, Ni] = sess.run(out1, feed_dict).flatten()
         
-        print("NN learned for m = " + str(mm[mi]) + ", N = " + str(NN[Ni]) + ", in " + '{:.4f}'.format(tms[mi, Ni]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ni, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ni, 1]))
+        import matplotlib.pyplot as plt
+        fig = plt.figure()
+        plt.plot(np.arange(ep), res_loss[:, 0], "b-", label = "Train")
+        plt.plot(np.arange(ep), res_loss[:, 1], "go", label = "Test")
+        plt.legend()
+        plt.ylim([0.0, 0.04])
+        plt.savefig("fokker_data/fokker_sv_DN_learn_" + str(m) + "_" + str(N) + ".png", bbox_inches = 'tight', dpi = 500)
+        plt.show()
+        plt.close(fig)
         
-        np.savetxt("heat_data/heat_RN_det_err_" + str(mm[mi]) + ".csv", err[mi])
-        np.savetxt("heat_data/heat_RN_det_tms_" + str(mm[mi]) + ".csv", tms[mi])
-        np.savetxt("heat_data/heat_RN_det_evl_" + str(mm[mi]) + ".csv", evl[mi])
-        np.savetxt("heat_data/heat_RN_det_u1p_" + str(mm[mi]) + ".csv", u1p[mi])
+        print("DN learned for m = " + str(mm[mi]) + ", N = " + str(NN[Ni]) + ", in " + '{:.4f}'.format(tms[mi, Ni]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ni, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ni, 1]))
+        
+        np.savetxt("fokker_data/fokker_sv_DN_err_" + str(mm[mi]) + ".csv", err[mi])
+        np.savetxt("fokker_data/fokker_sv_DN_tms_" + str(mm[mi]) + ".csv", tms[mi])
+        np.savetxt("fokker_data/fokker_sv_DN_u1p_" + str(mm[mi]) + ".csv", u1p[mi])
