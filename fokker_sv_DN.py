@@ -8,30 +8,30 @@ K1 = 100
 tt = np.linspace(0.0, t, K1)
 dt1 = t/K1
 
-J = 200000
-val_split = 0.2
-Jtrain = int((1-val_split)*J)
-ind_train = np.arange(Jtrain)
-ind_test = np.arange(Jtrain, J)
-
-ep = 3000
-batch_size = 500
-nrbatch = int(Jtrain/batch_size)
-eval_every = 100
-lr = 5e-5
-activation = tf.tanh
-init = tf.random_normal_initializer(stddev = 1e-2)
-print_details = True
-
 mm = [10, 20, 30]
-NN = [16, 32, 64, 128, 256, 512, 1024]
+JJ = np.power(2, np.arange(12, 19))
 
-err = np.nan*np.ones([len(mm), len(NN), 2])
-tms = np.nan*np.ones([len(mm), len(NN)])
-u1p = np.nan*np.ones([len(mm), len(NN), 100])
+ep = 5000
+batch_size = 1000
+eval_every = 250
+lr = 5e-5
+val_split = 0.2
+activation = tf.tanh
+init = tf.keras.initializers.GlorotNormal()
+print_details = False
+
+err = np.nan*np.ones([len(mm), len(JJ), 2])
+tms = np.nan*np.ones([len(mm), len(JJ)])
+u1p = np.nan*np.ones([len(mm), len(JJ), 100])
 for mi in range(len(mm)):
     m = mm[mi]
-    N = NN[0]
+    J = JJ[0]
+    Jtrain = int((1-val_split)*J)
+    ind_train = np.arange(Jtrain)
+    ind_test = np.arange(Jtrain, J)
+    nrbatch = int(np.ceil(Jtrain/batch_size))
+    N = 10*int(np.sqrt(J/np.log(J)))
+    
     C1 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(m)
     C2 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(m)
     c2 = 0.1*np.ones([1, m], dtype = np.float32)/m
@@ -50,9 +50,17 @@ for mi in range(len(mm)):
     V = np.random.normal(size = [J, m], scale = 0.3)
     Y = np.exp(-0.5*np.sum(np.matmul(V-mut, Sigmat1)*(V-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.sqrt(np.linalg.det(Sigmat))
     
-    for Ni in range(len(NN)):
+    for Ji in range(len(JJ)):
         tf.reset_default_graph()
-        N = NN[Ni]
+        J = JJ[Ji]
+        Jtrain = int((1-val_split)*J)
+        ind_train = np.arange(Jtrain)
+        ind_test = np.arange(Jtrain, J)
+        nrbatch = int(np.ceil(Jtrain/batch_size))
+        N = 10*int(np.sqrt(J/np.log(J)))
+        
+        V = np.random.normal(size = [J, m], scale = 0.3)
+        Y = np.exp(-0.5*np.sum(np.matmul(V-mut, Sigmat1)*(V-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.sqrt(np.linalg.det(Sigmat))
         
         begin1 = time.time()
         inp = tf.placeholder(shape = (None, m), dtype = tf.float32)
@@ -99,13 +107,13 @@ for mi in range(len(mm)):
                     print("")
         
         end1 = time.time()
-        tms[mi, Ni] = end1-begin1
+        tms[mi, Ji] = end1-begin1
         ind = np.nanargmin(res_loss[:, 1])
-        err[mi, Ni] = res_loss[-1]
+        err[mi, Ji] = res_loss[-1]
         u = 0.25*np.ones([100, m])
         u[:, 0] = np.linspace(-0.4, 0.4, 100)
         feed_dict = {inp: u}
-        u1p[mi, Ni] = sess.run(out1, feed_dict).flatten()
+        u1p[mi, Ji] = sess.run(out1, feed_dict).flatten()
         
         import matplotlib.pyplot as plt
         fig = plt.figure()
@@ -113,11 +121,11 @@ for mi in range(len(mm)):
         plt.plot(np.arange(ep), res_loss[:, 1], "go", label = "Test")
         plt.legend()
         plt.ylim([0.0, 0.04])
-        plt.savefig("fokker_data/fokker_sv_DN_learn_" + str(m) + "_" + str(N) + ".png", bbox_inches = 'tight', dpi = 500)
+        plt.savefig("fokker_data/fokker_sv_DN_learn_" + str(m) + "_" + str(J) + ".png", bbox_inches = 'tight', dpi = 500)
         plt.show()
         plt.close(fig)
         
-        print("DN learned for m = " + str(mm[mi]) + ", N = " + str(NN[Ni]) + ", in " + '{:.4f}'.format(tms[mi, Ni]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ni, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ni, 1]))
+        print("DN learned for m = " + str(m) + ", J = " + str(J) + ", N = " + str(N) + ", in " + '{:.4f}'.format(tms[mi, Ji]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ji, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ji, 1]))
         
         np.savetxt("fokker_data/fokker_sv_DN_err_" + str(mm[mi]) + ".csv", err[mi])
         np.savetxt("fokker_data/fokker_sv_DN_tms_" + str(mm[mi]) + ".csv", tms[mi])

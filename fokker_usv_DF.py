@@ -10,30 +10,30 @@ dt1 = T/K1
 
 tt = np.reshape(np.linspace(0.0, T, K+1), [-1, 1, 1])
 
-J = 20000
-val_split = 0.2
-Jtrain = int((1-val_split)*J)
-ind_train = np.arange(Jtrain)
-ind_test = np.arange(Jtrain, J)
+mm = [10, 20, 30]
+JJ = np.power(2, np.arange(9, 14))
 
-ep = 10000
-batch_size = 500
-nrbatch = int(Jtrain/batch_size)
-eval_every = 100
+ep = 8000
+batch_size = 1000
+eval_every = 250
 lr = 1e-5
+val_split = 0.2
 activation = tf.tanh
 init = tf.random_normal_initializer(stddev = 1e-5)
-print_details = True
+print_details = False
 
-mm = [10, 20, 30]
-NN = [16, 32, 64, 128, 256]
-
-err = np.nan*np.ones([len(mm), len(NN), 2])
-tms = np.nan*np.ones([len(mm), len(NN)])
-u1p = np.nan*np.ones([len(mm), len(NN), K+1, 100])
+err = np.nan*np.ones([len(mm), len(JJ), 2])
+tms = np.nan*np.ones([len(mm), len(JJ)])
+u1p = np.nan*np.ones([len(mm), len(JJ), K+1, 100])
 for mi in range(len(mm)):
     m = mm[mi]
-    N = NN[0]
+    J = JJ[0]
+    Jtrain = int((1-val_split)*J)
+    ind_train = np.arange(Jtrain)
+    ind_test = np.arange(Jtrain, J)
+    nrbatch = int(np.ceil(Jtrain/batch_size))
+    N = 10*int(np.sqrt(J/np.log(J)))
+    
     C1 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(np.float32(m))
     C2 = 0.1*np.eye(m, dtype = np.float32)/np.sqrt(np.float32(m))
     c2 = 0.1*np.ones([1, m], dtype = np.float32)/np.float32(m)
@@ -52,10 +52,17 @@ for mi in range(len(mm)):
     V = np.random.normal(size = [1, 1, J, m], scale = 0.3).astype(dtype = np.float32)
     Y = np.exp(-0.5*np.sum(np.matmul(V[0]-mut, Sigmat1)*(V[0]-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.reshape(np.sqrt(np.linalg.det(Sigmat)), [-1, 1, 1])
     
-    for Ni in range(len(NN)):
+    for Ji in range(len(JJ)):
         tf.reset_default_graph()
-        m = mm[mi]
-        N = NN[Ni]
+        J = JJ[Ji]
+        Jtrain = int((1-val_split)*J)
+        ind_train = np.arange(Jtrain)
+        ind_test = np.arange(Jtrain, J)
+        nrbatch = int(np.ceil(Jtrain/batch_size))
+        N = 5*int(np.sqrt(J/np.log(J)))
+        
+        V = np.random.normal(size = [1, 1, J, m], scale = 0.3).astype(dtype = np.float32)
+        Y = np.exp(-0.5*np.sum(np.matmul(V[0]-mut, Sigmat1)*(V[0]-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.reshape(np.sqrt(np.linalg.det(Sigmat)), [-1, 1, 1])
         
         begin1 = time.time()
         inp = tf.placeholder(shape = (1, 1, None, m), dtype = tf.float32)
@@ -120,27 +127,27 @@ for mi in range(len(mm)):
                     print("")
                     
         end1 = time.time()
-        tms[mi, Ni] = end1-begin1
+        tms[mi, Ji] = end1-begin1
         ind = np.nanargmin(res_loss[:, 1])
-        err[mi, Ni] = res_loss[-1]
+        err[mi, Ji] = res_loss[-1]
         u = 0.25*np.ones([1, 1, 100, m])
         u1 = np.linspace(-0.4, 0.4, 100)
         u[0, 0, :, 0] = u1
         feed_dict = {inp: u}
-        u1p[mi, Ni] = sess.run(out_test, feed_dict)[:, :, 0]
+        u1p[mi, Ji] = sess.run(out_test, feed_dict)[:, :, 0]
         
         import matplotlib.pyplot as plt
         fig = plt.figure()
         plt.plot(np.arange(ep), res_loss[:, 0], "b-", label = "Train")
         plt.plot(np.arange(ep), res_loss[:, 1], "go", label = "Test")
         plt.legend()
-        plt.ylim([0.0, 0.07])
+        plt.ylim([0.0, 0.2])
         plt.savefig("fokker_data/fokker_usv_DF_learn_" + str(m) + "_" + str(N) + ".png", bbox_inches = 'tight', dpi = 500)
         plt.show()
         plt.close(fig)
         
-        print("DN learned for m = " + str(mm[mi]) + ", N = " + str(NN[Ni]) + ", in " + '{:.4f}'.format(tms[mi, Ni]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ni, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ni, 1]))
+        print("DF learned for m = " + str(m) + ", J = " + str(J) + ", N = " + str(N) + ", in " + '{:.4f}'.format(tms[mi, Ji]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ji, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ji, 1]))
         
         np.savetxt("fokker_data/fokker_usv_DF_err_" + str(mm[mi]) + ".csv", err[mi])
         np.savetxt("fokker_data/fokker_usv_DF_tms_" + str(mm[mi]) + ".csv", tms[mi])
-        np.savetxt("fokker_data/fokker_usv_DF_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(NN), -1]))
+        np.savetxt("fokker_data/fokker_usv_DF_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(JJ), -1]))

@@ -10,21 +10,22 @@ dt1 = T/K1
 
 tt = np.reshape(np.linspace(0.0, T, K+1), [-1, 1, 1])
 
-J = 20000
 val_split = 0.2
-Jtrain = int((1-val_split)*J)
-ind_train = np.arange(Jtrain)
-ind_test = np.arange(Jtrain, J)
 
 mm = [10, 20, 30]
-NN = [16, 32, 64, 128, 256]
+JJ = np.power(2, np.arange(9, 14))
 
-err = np.nan*np.ones([len(mm), len(NN), 2])
-tms = np.nan*np.ones([len(mm), len(NN)])
-u1p = np.nan*np.ones([len(mm), len(NN), K+1, 100])
-for mi in range(len(mm)):
+err = np.nan*np.ones([len(mm), len(JJ), 2])
+tms = np.nan*np.ones([len(mm), len(JJ)])
+u1p = np.nan*np.ones([len(mm), len(JJ), K+1, 100])
+for mi in range(len(mm)-1,len(mm)):
     m = mm[mi]
-    N = NN[0]
+    J = JJ[0]
+    Jtrain = int((1-val_split)*J)
+    ind_train = np.arange(Jtrain)
+    ind_test = np.arange(Jtrain, J)
+    N = 10*int(np.sqrt(J/np.log(J)))
+    
     C1 = 0.1*np.expand_dims(np.eye(m, dtype = np.float32), 0)/np.sqrt(m)
     C2 = 0.1*np.expand_dims(np.eye(m, dtype = np.float32), 0)/np.sqrt(m)
     c2 = 0.1*np.ones([1, m], dtype = np.float32)/m
@@ -63,9 +64,15 @@ for mi in range(len(mm)):
     W = scl.lstsq(np.reshape(R[:, 0, ind_train], [N, -1]).T , Y[0, ind_train].flatten(), lapack_driver = 'gelsy')[0]
     Y_pred = np.sum(R*np.reshape(W, [-1, 1, 1, 1]), axis = 0)
     
-    for Ni in range(len(NN)):
-        m = mm[mi]
-        N = NN[Ni]
+    for Ji in range(len(JJ)):
+        J = JJ[Ji]
+        Jtrain = int((1-val_split)*J)
+        ind_train = np.arange(Jtrain)
+        ind_test = np.arange(Jtrain, J)
+        N = 10*int(np.sqrt(J/np.log(J)))
+        
+        V = np.random.normal(size = [1, 1, J, m], scale = 0.3).astype(dtype = np.float32)
+        Y = np.exp(-0.5*np.sum(np.matmul(V[0]-mut, Sigmat1)*(V[0]-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.reshape(np.sqrt(np.linalg.det(Sigmat)), [-1, 1, 1])
         
         b = time.time()
         mu0 = scs.multivariate_t.rvs(size = N, shape = np.eye(m))
@@ -87,26 +94,26 @@ for mi in range(len(mm)):
         W = scl.lstsq(np.reshape(R[:, 0, ind_train], [N, -1]).T , Y[0, ind_train].flatten(), lapack_driver = 'gelsy')[0]
         Y_pred = np.sum(R*np.reshape(W, [-1, 1, 1, 1]), axis = 0)
         
-        err[mi, Ni, 0] = np.sqrt(np.mean(np.square(Y[:, ind_train] - Y_pred[:, ind_train])))
-        err[mi, Ni, 1] = np.sqrt(np.mean(np.square(Y[:, ind_test] - Y_pred[:, ind_test])))
+        err[mi, Ji, 0] = np.sqrt(np.mean(np.square(Y[:, ind_train] - Y_pred[:, ind_train])))
+        err[mi, Ji, 1] = np.sqrt(np.mean(np.square(Y[:, ind_test] - Y_pred[:, ind_test])))
         
         e = time.time()
-        tms[mi, Ni] = e-b
+        tms[mi, Ji] = e-b
         
         u = 0.25*np.ones([1, 1, 100, m])
         u1 = np.linspace(-0.4, 0.4, 100)
         u[0, 0, :, 0] = u1
         R = np.exp(-0.5*np.sum(np.matmul(u-mut1, Sit11)*(u-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.reshape(np.sqrt(np.linalg.det(Sit1)), [N, K+1, 1, 1])
-        u1p[mi, Ni] = np.sum(R*np.reshape(W, [-1, 1, 1, 1]), axis = 0)[:, :, 0]
+        u1p[mi, Ji] = np.sum(R*np.reshape(W, [-1, 1, 1, 1]), axis = 0)[:, :, 0]
         
-        print("RN learned for m = " + str(mm[mi]) + ", N = " + str(NN[Ni]) + ", in " + '{:.4f}'.format(tms[mi, Ni]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ni, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ni, 1]))
+        print("RF learned for m = " + str(m) + ", J = " + str(J) + ", N = " + str(N) + ", in " + '{:.4f}'.format(tms[mi, Ji]) + "s: in-sample " + '{:.4f}'.format(err[mi, Ji, 0]) + ", out-of-sample " + '{:.4f}'.format(err[mi, Ji, 1]))
         
         import matplotlib.pyplot as plt
         fig = plt.figure()
         ax = fig.add_subplot(projection = '3d')
         y = np.exp(-0.5*np.sum(np.matmul(u[0]-mut, Sigmat1)*(u[0]-mut), axis = -1, keepdims = True))/np.power(2.0*np.pi, m/2.0)/np.reshape(np.sqrt(np.linalg.det(Sigmat)), [-1, 1, 1])
         uu_plot, tt_plot = np.meshgrid(u1, tt.flatten())
-        ax.plot_surface(tt_plot, uu_plot, u1p[mi, Ni], cmap = plt.cm.coolwarm, alpha = 0.7, linewidth = 0, antialiased = False)
+        ax.plot_surface(tt_plot, uu_plot, u1p[mi, Ji], cmap = plt.cm.coolwarm, alpha = 0.7, linewidth = 0, antialiased = False)
         ax.plot_wireframe(tt_plot, uu_plot, y[:, :, 0], rstride = 3, cstride = 4, color = "black", linewidth = 0.4)
         ax.set_xlabel('$t$')
         ax.set_ylabel('$u$')
@@ -115,4 +122,4 @@ for mi in range(len(mm)):
         
     np.savetxt("fokker_data/fokker_usv_RN_err_" + str(mm[mi]) + ".csv", err[mi])
     np.savetxt("fokker_data/fokker_usv_RN_tms_" + str(mm[mi]) + ".csv", tms[mi])
-    np.savetxt("fokker_data/fokker_usv_RN_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(NN), -1]))
+    np.savetxt("fokker_data/fokker_usv_RN_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(JJ), -1]))
