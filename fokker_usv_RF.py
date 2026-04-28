@@ -120,6 +120,6 @@ for mi in range(len(mm)-1,len(mm)):
         ax.set_zlabel('$f(t,u)$')
         plt.show()
         
-    np.savetxt("fokker_data/fokker_usv_RN_err_" + str(mm[mi]) + ".csv", err[mi])
-    np.savetxt("fokker_data/fokker_usv_RN_tms_" + str(mm[mi]) + ".csv", tms[mi])
-    np.savetxt("fokker_data/fokker_usv_RN_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(JJ), -1]))
+    np.savetxt("fokker_data/fokker_usv_RF_err_" + str(mm[mi]) + ".csv", err[mi])
+    np.savetxt("fokker_data/fokker_usv_RF_tms_" + str(mm[mi]) + ".csv", tms[mi])
+    np.savetxt("fokker_data/fokker_usv_RF_u1p_" + str(mm[mi]) + ".csv", np.reshape(u1p[mi], [len(JJ), -1]))
