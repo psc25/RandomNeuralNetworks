@@ -20,7 +20,7 @@ JJ = np.power(2, np.arange(12, 19))
 err = np.nan*np.ones([len(mm), len(JJ), 2])
 tms = np.nan*np.ones([len(mm), len(JJ)])
 u1p = np.nan*np.ones([len(mm), len(JJ), K+1, 100])
-for mi in range(len(mm)-1,len(mm)):
+for mi in range(len(mm)):
     m = mm[mi]
     J = JJ[0]
     Jtrain = int((1-val_split)*J)
